@@ -1,0 +1,33 @@
+#Setting up environment and cross-sectional time-series panel data set. Find .csv data in . 
+install.packages("texreg", repos = "http://cran.us.r-project.org")
+install.packages("car")
+
+library(texreg)
+library(car)
+
+data <- read.csv("Panel_Data.csv")
+summary(data)
+
+# Conditionality and GDP per capita
+
+reg1 <- lm(Panel_Data$GDP_pc ~ Panel_Data$Conditions + Panel_Data$Globalisation + Panel_Data$GDP + Panel_Data$Freedom)
+screenreg(reg1)
+reg1_pvalues <- summary(reg1)$coefficients
+print
+
+
+# Conditionality, EF, and GDP per capita
+
+reg2 <- lm(Panel_Data$GDP_pc ~ Panel_Data$Conditions * Panel_Data$EF + Panel_Data$Globalisation + Panel_Data$GDP + Panel_Data$Freedom)
+screenreg(reg2)
+reg2_pvalues <- summary(reg2)$coefficients
+print
+
+screenreg(list(reg1,reg2))
+
+
+# Multicollinearity Testing using Variance Inflation Factor (VIF)
+
+vif(reg1)
+VIF_model <- lm (Panel_Data$GDP_pc ~ Panel_Data$Conditions+ Panel_Data$Globalisation + Panel_Data$GDP + Panel_Data$Freedom + Panel_Data$EF)
+vif(VIF_model)
